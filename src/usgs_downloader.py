@@ -3,7 +3,7 @@ import os
 import datetime
 
 
-class Downloader:
+class USGSDownloader:
     def __init__(self, site_id, num_days=7):
         self.site_id = site_id
         self.num_days = num_days
@@ -46,5 +46,5 @@ class Downloader:
 
 
 if __name__ == "__main__":
-    downloader = Downloader("09057500")
+    downloader = USGSDownloader("09057500")
     downloader.fetch_and_save_flow_data()
