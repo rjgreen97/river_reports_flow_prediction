@@ -4,4 +4,4 @@ __pycache__/
 *$py.class
 tmp/*
 tmp_data/*
-lighting_logs/
+lightning_logs/
