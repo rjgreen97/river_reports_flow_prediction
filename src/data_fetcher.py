@@ -2,11 +2,10 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 import pandas as pd
 import os
-import uuid
 
 
 
-class RiverDataFetcher:
+class DataFetcher:
     def __init__(self, site_id: str):
         self.site_id = site_id
         self.session = self._start_session()
@@ -34,6 +33,14 @@ class RiverDataFetcher:
         self.session.close()
         return site_data_df["source_name"].values[0]
 
+    def get_all_sites(self) -> list:
+        raw_sql = text("select distinct site_id from rr.flow;")
+        site_ids = self.session.execute(raw_sql).fetchall()
+        site_ids_df = pd.DataFrame(site_ids)
+        uuid_list = site_ids_df['site_id'].tolist()
+        self.session.close()
+        return [str(uuid_obj) for uuid_obj in uuid_list]
+
     def _start_session(self) -> sessionmaker:
         engine = create_engine("postgresql://rjgreen@localhost/riverreports")
         Session = sessionmaker(bind=engine)
@@ -58,16 +65,7 @@ class RiverDataFetcher:
         river_df = river_df.drop_duplicates(subset='ds', keep='first')
         return river_df.reset_index(drop=True)
 
-    def get_all_sites(self) -> list:
-        raw_sql = text("select distinct site_id from rr.flow;")
-        site_ids = self.session.execute(raw_sql).fetchall()
-        site_ids_df = pd.DataFrame(site_ids)
-        uuid_list = site_ids_df['site_id'].tolist()
-        self.session.close()
-        return [str(uuid_obj) for uuid_obj in uuid_list]
-
-
 if __name__ == "__main__":
-    river_data_fetcher = RiverDataFetcher("2813acc0-1dc3-413f-b27c-284e934732a2")
-    df = river_data_fetcher.generate_df()
-    river_data_fetcher.plot()
+    data_fetcher = DataFetcher("2813acc0-1dc3-413f-b27c-284e934732a2")
+    df = data_fetcher.generate_df()
+    data_fetcher.plot()
