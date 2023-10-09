@@ -1,15 +1,30 @@
 from src.forecaster import Forecaster
-from src.data_fetcher import DataFetcher
 
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
+
+
 class ForecastingSession:
     def __init__(self):
-        pass
+        self.site_ids_list = self._get_all_site_ids()
 
-    def get_all_site_ids(self) -> list:
+    def forecast_all_sites(self) -> None:
+        try:
+            for site_id in self.site_ids_list:
+                if not (site_id == "81b4b099-088d-4205-9ecc-92673a67e693" or site_id == "8eeffcda-9313-4178-ac91-57e331d081ec" or site_id == "901f7826-7cf2-44f9-833f-9cda40ebc374"):
+                    flow_forecaster = Forecaster(site_id)
+                    flow_forecaster.forecast()
+        except Exception as e:
+            print("\n=========================")
+            print(f"site_id: {site_id}")
+            print("=========================")
+            print("\n=========================")
+            print(f"e: {e}")
+            print("=========================")
+
+    def _get_all_site_ids(self) -> list:
         engine = create_engine("postgresql://rjgreen@localhost/riverreports")
         Session = sessionmaker(bind=engine)
         session = Session()
@@ -23,5 +38,4 @@ class ForecastingSession:
 
 if __name__ == "__main__":
    forecasting_session = ForecastingSession()
-   site_ids = forecasting_session.get_all_site_ids() 
-   print(len(site_ids))
+   forecasting_session.forecast_all_sites()

@@ -7,7 +7,7 @@ set_log_level("ERROR")
 
 
 class Forecaster:
-    def __init__(self, site_id: str):
+    def __init__(self, site_id: str) -> None:
         self.data_fetcher = DataFetcher(site_id)
         self.model = NeuralProphet()
         self.df = self._get_df()
@@ -27,5 +27,5 @@ class Forecaster:
         return self.data_fetcher.source_name.lower().replace(" ", "_").replace(",", "")
 
 if __name__ == "__main__":
-    flow_forecaster = Forecaster("fa5ee27c-60bc-4801-ab60-7ab532734fa8")
+    flow_forecaster = Forecaster("81b4b099-088d-4205-9ecc-92673a67e693")
     flow_forecaster.forecast()
