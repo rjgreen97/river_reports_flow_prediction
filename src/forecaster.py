@@ -15,16 +15,21 @@ class Forecaster:
 
     def forecast(self) -> None:
         self.model.fit(self.df, freq="H")
-        df_future = self.model.make_future_dataframe(self.df, n_historic_predictions=True, periods=365)
+        df_future = self.model.make_future_dataframe(
+            self.df, n_historic_predictions=True, periods=365
+        )
         forecast = self.model.predict(df_future)
         plot = self.model.plot(forecast)
-        plot.write_image(os.path.join("plots", "forecasted_flow", f"{self.source_name}_forecast.png"))
+        plot.write_image(
+            os.path.join("plots", "forecasted_flow", f"{self.source_name}_forecast.png")
+        )
 
     def _get_df(self) -> pd.DataFrame:
         return self.data_fetcher.generate_df()
 
     def _get_site_source_name(self) -> str:
         return self.data_fetcher.source_name.lower().replace(" ", "_").replace(",", "")
+
 
 if __name__ == "__main__":
     flow_forecaster = Forecaster("81b4b099-088d-4205-9ecc-92673a67e693")
