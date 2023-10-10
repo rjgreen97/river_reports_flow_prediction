@@ -20,8 +20,8 @@ class ForecastingSession:
                     or site_id
                     == "901f7826-7cf2-44f9-833f-9cda40ebc374"  # stones river below j percy
                 ):
-                    flow_forecaster = Forecaster(site_id)
-                    flow_forecaster.forecast()
+                    forecaster = Forecaster(site_id)
+                    forecaster.forecast()
         except Exception as e:
             print(e)
 
