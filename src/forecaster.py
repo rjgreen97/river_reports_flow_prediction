@@ -19,11 +19,15 @@ class Forecaster:
             self.df, n_historic_predictions=True, periods=365
         )
         forecast_df = self.model.predict(df_future)
-        forecast_df.to_csv(os.path.join("data", "forecasted_flow", f"{self.source_name}_forecast.csv" ))
+        forecast_df.to_csv(
+            os.path.join("data", "forecasted_flow", f"{self.source_name}_forecast.csv")
+        )
 
         plot = self.model.plot(forecast_df)
         plot.write_image(
-            os.path.join("data", "forecasted_flow_plots", f"{self.source_name}_forecast.png")
+            os.path.join(
+                "data", "forecasted_flow_plots", f"{self.source_name}_forecast.png"
+            )
         )
 
     def _get_df(self) -> pd.DataFrame:
