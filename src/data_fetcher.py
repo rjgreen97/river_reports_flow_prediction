@@ -26,7 +26,7 @@ class DataFetcher:
         plt.set_title(f"{self.source_name}")
         plt.figure.savefig(
             os.path.join(
-                "plots", "historical_flow", f"{plot_file_source_name}_historical.png"
+                "data", "historical_flow_plots", f"{plot_file_source_name}_historical.png"
             )
         )
         self.session.close()

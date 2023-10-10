@@ -5,4 +5,4 @@ __pycache__/
 tmp/*
 tmp_data/*
 lightning_logs/
-plots/
+data/
