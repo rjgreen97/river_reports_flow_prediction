@@ -1,6 +1,10 @@
-# River Flow Predictions based on USGS/USBR Gage Data
+# River Flow Predictions
 
 ![alt text](https://www.askaboutflyfishing.com/wp-content/uploads/2014/11/kelly-galloup.jpg)
+
+## Order of Operations
+1) **ForcastingSession** creates forecasts for all sites
+2) **DatabaseWriter** updates `forecast` table
 
 ## Database Setup
 
