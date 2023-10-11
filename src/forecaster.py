@@ -8,7 +8,8 @@ set_log_level("ERROR")
 
 class Forecaster:
     def __init__(self, site_id: str) -> None:
-        self.data_fetcher = DataFetcher(site_id)
+        self.site_id = site_id
+        self.data_fetcher = DataFetcher(self.site_id)
         self.model = NeuralProphet()
 
     def forecast(self) -> None:
@@ -19,13 +20,13 @@ class Forecaster:
             df, n_historic_predictions=True, periods=365
         )
         forecast_df = self.model.predict(df_future)
-        self._write_forecast_csv(forecast_df, source_name)
+        self._write_forecast_csv(forecast_df)
         self._plot_forecast(forecast_df, source_name)
 
 
-    def _write_forecast_csv(self, forecast_df: pd.DataFrame, source_name: str) -> None:
+    def _write_forecast_csv(self, forecast_df: pd.DataFrame) -> None:
         forecast_df.to_csv(
-            os.path.join("data", "forecasted_flow", f"{source_name}_forecast.csv")
+            os.path.join("data", "forecasted_flow", f"{self.site_id}.csv")
         )
 
     def _plot_forecast(self, forecast_df: pd.DataFrame, source_name: str) -> None:

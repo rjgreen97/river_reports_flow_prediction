@@ -16,7 +16,7 @@ def test_forecast():
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
     forecaster.forecast()
     assert os.path.exists(
-        "data/forecasted_flow/roaring_fork_river_blw_maroon_creek_nr_aspen_co_forecast.csv"
+        "data/forecasted_flow/91b65ab1-7509-450b-8910-30a1e9227cc4.csv"
     )
 
 def test_get_df():

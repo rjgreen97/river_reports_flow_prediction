@@ -23,11 +23,9 @@ class ForecastingSession:
             print(e)
 
     def _get_all_site_ids(self) -> list:
-        engine = create_engine("postgresql://rjgreen@localhost/riverreports")
-        Session = sessionmaker(bind=engine)
+        Session = sessionmaker(bind=create_engine("postgresql://rjgreen@localhost/riverreports"))
         session = Session()
-        raw_sql = text("select distinct site_id from rr.flow;")
-        site_ids = session.execute(raw_sql).fetchall()
+        site_ids = session.execute(text("select distinct site_id from rr.flow;")).fetchall()
         site_ids_df = pd.DataFrame(site_ids)
         uuid_list = site_ids_df["site_id"].tolist()
         session.close()
@@ -38,6 +36,7 @@ if __name__ == "__main__":
     forecasting_session = ForecastingSession()
     forecasting_session.forecast_all_sites()
 
-# little tennesse below telico
-# elk river below tims ford
-# stones river below j percy
+# Probelm Sites:
+    # little tennesse below telico
+    # elk river below tims ford
+    # stones river below j percy

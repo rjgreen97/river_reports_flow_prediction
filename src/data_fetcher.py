@@ -41,14 +41,6 @@ class DataFetcher:
         self.session.close()
         return site_data_df["source_name"].values[0]
 
-    def get_all_sites(self) -> list:
-        raw_sql = text("select distinct site_id from rr.flow;")
-        site_ids = self.session.execute(raw_sql).fetchall()
-        site_ids_df = pd.DataFrame(site_ids)
-        uuid_list = site_ids_df["site_id"].tolist()
-        self.session.close()
-        return [str(uuid_obj) for uuid_obj in uuid_list]
-
     def _start_session(self) -> sessionmaker:
         engine = create_engine("postgresql://rjgreen@localhost/riverreports")
         Session = sessionmaker(bind=engine)

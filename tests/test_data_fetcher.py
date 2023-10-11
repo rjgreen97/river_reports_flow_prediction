@@ -33,14 +33,6 @@ def test_get_site_source_name():
     assert source_name == "Stones River below J Percy Priest Dam"
 
 
-def test_get_all_sites():
-    data_fetcher = DataFetcher("901f7826-7cf2-44f9-833f-9cda40ebc374")
-    site_ids = data_fetcher.get_all_sites()
-    assert len(site_ids) == 587
-    assert type(site_ids) == list
-    assert type(site_ids[0]) == str
-
-
 def test_start_session():
     data_fetcher = DataFetcher("901f7826-7cf2-44f9-833f-9cda40ebc374")
     session = data_fetcher._start_session()
