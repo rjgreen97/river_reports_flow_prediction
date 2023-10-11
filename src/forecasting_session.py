@@ -13,12 +13,9 @@ class ForecastingSession:
         try:
             for site_id in self.site_ids_list:
                 if not (
-                    site_id
-                    == "81b4b099-088d-4205-9ecc-92673a67e693"  # little tennesse below telico
-                    or site_id
-                    == "8eeffcda-9313-4178-ac91-57e331d081ec"  # elk river below tims ford
-                    or site_id
-                    == "901f7826-7cf2-44f9-833f-9cda40ebc374"  # stones river below j percy
+                    site_id == "81b4b099-088d-4205-9ecc-92673a67e693"
+                    or site_id == "8eeffcda-9313-4178-ac91-57e331d081ec"
+                    or site_id == "901f7826-7cf2-44f9-833f-9cda40ebc374"
                 ):
                     forecaster = Forecaster(site_id)
                     forecaster.forecast()
@@ -40,3 +37,7 @@ class ForecastingSession:
 if __name__ == "__main__":
     forecasting_session = ForecastingSession()
     forecasting_session.forecast_all_sites()
+
+# little tennesse below telico
+# elk river below tims ford
+# stones river below j percy

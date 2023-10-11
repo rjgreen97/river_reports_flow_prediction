@@ -13,22 +13,25 @@ class Forecaster:
 
     def forecast(self) -> None:
         df = self._get_df()
-        print(df)
         source_name = self._get_site_source_name()
         self.model.fit(df, freq="H")
         df_future = self.model.make_future_dataframe(
             df, n_historic_predictions=True, periods=365
         )
         forecast_df = self.model.predict(df_future)
+        self._write_forecast_csv(forecast_df, source_name)
+        self._plot_forecast(forecast_df, source_name)
+
+
+    def _write_forecast_csv(self, forecast_df: pd.DataFrame, source_name: str) -> None:
         forecast_df.to_csv(
             os.path.join("data", "forecasted_flow", f"{source_name}_forecast.csv")
         )
 
+    def _plot_forecast(self, forecast_df: pd.DataFrame, source_name: str) -> None:
         plot = self.model.plot(forecast_df)
         plot.write_image(
-            os.path.join(
-                "data", "forecasted_flow_plots", f"{source_name}_forecast.png"
-            )
+            os.path.join("data", "forecasted_flow_plots", f"{source_name}_forecast.png")
         )
 
     def _get_df(self) -> pd.DataFrame:
@@ -36,6 +39,7 @@ class Forecaster:
 
     def _get_site_source_name(self) -> str:
         return self.data_fetcher.source_name.lower().replace(" ", "_").replace(",", "")
+
 
 if __name__ == "__main__":
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
