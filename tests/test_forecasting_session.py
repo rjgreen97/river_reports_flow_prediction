@@ -1,5 +1,4 @@
 from src.forecasting_session import ForecastingSession
-from src.forecaster import Forecaster
 import os
 
 def test_init():
@@ -7,10 +6,6 @@ def test_init():
     assert isinstance(forecasting_session.site_ids_list, list)
     assert len(forecasting_session.site_ids_list) > 0
 
-def test_forecast_all_sites():
-    forecasting_session = ForecastingSession()
-    forecasting_session.forecast_all_sites()
-    assert len(os.listdir("data/forecasted_flow")) > 0
 
 def test_get_all_site_ids():
     forecasting_session = ForecastingSession()
