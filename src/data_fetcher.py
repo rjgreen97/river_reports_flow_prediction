@@ -16,7 +16,7 @@ class DataFetcher:
         self.session.close()
         return river_df
 
-    def plot(self) -> None:
+    def plot_historical_flows(self) -> None:
         river_df = self.generate_df()
         plot_file_source_name = (
             self.source_name.lower().replace(" ", "_").replace(",", "")
@@ -69,4 +69,4 @@ class DataFetcher:
 if __name__ == "__main__":
     data_fetcher = DataFetcher("901f7826-7cf2-44f9-833f-9cda40ebc374")
     df = data_fetcher.generate_df()
-    data_fetcher.plot()
+    data_fetcher.plot_historical_flows()

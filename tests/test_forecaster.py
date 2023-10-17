@@ -1,6 +1,7 @@
 from src.forecaster import Forecaster
 from neuralprophet import NeuralProphet
 from src.data_fetcher import DataFetcher
+from src.forecast import Forecast
 import os
 import pandas as pd
 
@@ -12,12 +13,14 @@ def test_init():
     assert isinstance(forecaster.model, NeuralProphet)
 
 
-def test_forecast():
+def test_generate_forecast():
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
-    forecaster.forecast()
-    assert os.path.exists(
-        "data/forecasted_flow/91b65ab1-7509-450b-8910-30a1e9227cc4.csv"
-    )
+    forecast = forecaster.generate_forecast()
+    assert isinstance(forecast, Forecast)
+
+def test_plot_forecast():
+    forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
+    assert os.path.exists("data/forecasted_flow_plots/roaring_fork_river_blw_maroon_creek_nr_aspen_co_forecast.png")
 
 def test_get_df():
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")

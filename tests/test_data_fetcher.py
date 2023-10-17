@@ -19,7 +19,7 @@ def test_generate_df():
     assert df.dtypes[1] == "float64"
 
 
-def test_plot():
+def plot_historical_flows():
     data_fetcher = DataFetcher("901f7826-7cf2-44f9-833f-9cda40ebc374")
     data_fetcher.plot()
     assert os.path.exists(
