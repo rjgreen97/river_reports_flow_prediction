@@ -1,5 +1,4 @@
 import pandas as pd
-import datetime as dt
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -8,7 +7,6 @@ class Forecast:
     def __init__(self, df: pd.DataFrame, site_id: str) -> None:
         self.df = df
         self.site_id = site_id
-        self.current_datetime = self._get_current_datetime()
         self.engine = create_engine("postgresql://rjgreen@localhost/riverreports")
 
     # def save(self) -> None:
@@ -24,7 +22,6 @@ class Forecast:
     #     self.session.close()
 
     def _parse_forecast(self) -> pd.DataFrame:
-        # forecast_df = forecast_df[forecast_df["ds"] > self.curent_datetime]
         forecast_df = self.df.copy(deep=True)
         forecast_df = forecast_df[["ds", "yhat1"]]
         forecast_df["yhat1"] = forecast_df["yhat1"].round(2)
@@ -35,6 +32,11 @@ class Forecast:
         )
         return forecast_df
 
-    def _get_current_datetime(self) -> str:
-        current_datetime = dt.datetime.now()
-        return current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+if __name__ == "__main__":
+    from src.forecaster import Forecaster
+
+    forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
+    forecast = forecaster.generate_forecast()
+    df = forecast._parse_forecast()
+    print(df)

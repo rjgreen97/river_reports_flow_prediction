@@ -18,7 +18,7 @@ class Forecaster:
         source_name = self._get_site_source_name()
         self.model.fit(df, freq="H")
         df_future = self.model.make_future_dataframe(
-            df, n_historic_predictions=True, periods=365
+            df, n_historic_predictions=False, periods=168
         )
         forecast_df = self.model.predict(df_future)
         self._plot_forecast(forecast_df, source_name)

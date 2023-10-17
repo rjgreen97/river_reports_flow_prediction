@@ -18,9 +18,13 @@ def test_generate_forecast():
     forecast = forecaster.generate_forecast()
     assert isinstance(forecast, Forecast)
 
+
 def test_plot_forecast():
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
-    assert os.path.exists("data/forecasted_flow_plots/roaring_fork_river_blw_maroon_creek_nr_aspen_co_forecast.png")
+    assert os.path.exists(
+        "data/forecasted_flow_plots/roaring_fork_river_blw_maroon_creek_nr_aspen_co_forecast.png"
+    )
+
 
 def test_get_df():
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
@@ -30,8 +34,8 @@ def test_get_df():
     assert df.dtypes[0] == "datetime64[ns]"
     assert df.dtypes[1] == "float64"
 
+
 def test_get_site_source_name():
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
     source_name = forecaster._get_site_source_name()
     assert source_name == "roaring_fork_river_blw_maroon_creek_nr_aspen_co"
-    

@@ -1,6 +1,7 @@
 from src.forecasting_session import ForecastingSession
 import os
 
+
 def test_init():
     forecasting_session = ForecastingSession()
     assert isinstance(forecasting_session.site_ids_list, list)
@@ -13,6 +14,7 @@ def test_get_all_site_ids():
     assert isinstance(site_ids, list)
     assert len(site_ids) == 587
     assert isinstance(site_ids[0], str)
+
 
 def test_get_excluded_sites():
     forecasting_session = ForecastingSession()
