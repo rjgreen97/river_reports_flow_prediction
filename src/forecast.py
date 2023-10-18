@@ -9,17 +9,20 @@ class Forecast:
         self.site_id = site_id
         self.engine = create_engine("postgresql://rjgreen@localhost/riverreports")
 
-    # def save(self) -> None:
-    #     Session = sessionmaker(bind=self.engine)
-    #     try:
-    #         forecast_df = self._parse_forecast()
-    #         forecast_df.to_sql(
-    #             "rr.forecast", con=self.session.bind, if_exists="append", index=False
-    #         )
-
-    #     except Exception as e:
-    #         print(f"Error writing {self.site_id} to database: {e}")
-    #     self.session.close()
+    def save(self) -> None:
+        Session = sessionmaker(bind=self.engine)
+        with Session() as session:
+            try:
+                forecast_df = self._parse_forecast()
+                forecast_df.to_sql(
+                    name="forecast",
+                    con=session.bind,
+                    schema="rr",
+                    if_exists="append",
+                    index=False,
+                )
+            except Exception as e:
+                print(f"Error saving forecast for {self.site_id}: {e}")
 
     def _parse_forecast(self) -> pd.DataFrame:
         forecast_df = self.df.copy(deep=True)
@@ -31,12 +34,3 @@ class Forecast:
             columns={"ds": "ts", "yhat1": "value"}
         )
         return forecast_df
-
-
-if __name__ == "__main__":
-    from src.forecaster import Forecaster
-
-    forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
-    forecast = forecaster.generate_forecast()
-    df = forecast._parse_forecast()
-    print(df)

@@ -16,7 +16,7 @@ class ForecastingSession:
                     print(f"Forecasting {site_id}")
                     forecaster = Forecaster(site_id)
                     forecast = forecaster.generate_forecast()
-                    # forecast.save()
+                    forecast.save()
         except Exception as e:
             print(e)
 
@@ -26,10 +26,10 @@ class ForecastingSession:
         )
         session = Session()
         site_ids = session.execute(
-            text("select distinct site_id from rr.flow;")
+            text("select distinct id from rr.site where show = True;")
         ).fetchall()
         site_ids_df = pd.DataFrame(site_ids)
-        uuid_list = site_ids_df["site_id"].tolist()
+        uuid_list = site_ids_df["id"].tolist()
         session.close()
         return [str(uuid_obj) for uuid_obj in uuid_list]
 

@@ -12,7 +12,7 @@ def test_get_all_site_ids():
     forecasting_session = ForecastingSession()
     site_ids = forecasting_session._get_all_site_ids()
     assert isinstance(site_ids, list)
-    assert len(site_ids) == 587
+    assert len(site_ids) == 545
     assert isinstance(site_ids[0], str)
 
 
