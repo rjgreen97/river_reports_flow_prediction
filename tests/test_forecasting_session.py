@@ -20,5 +20,5 @@ def test_get_excluded_sites():
     forecasting_session = ForecastingSession()
     excluded_sites = forecasting_session._get_excluded_sites()
     assert isinstance(excluded_sites, list)
-    assert len(excluded_sites) == 3
+    assert len(excluded_sites) == 6
     assert isinstance(excluded_sites[0], str)

@@ -4,7 +4,6 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-
 class ForecastingSession:
     def __init__(self):
         self.site_ids_list = self._get_all_site_ids()
@@ -13,12 +12,11 @@ class ForecastingSession:
         try:
             for site_id in self.site_ids_list:
                 if not (site_id in self._get_excluded_sites()):
-                    print(f"Forecasting {site_id}")
                     forecaster = Forecaster(site_id)
                     forecast = forecaster.generate_forecast()
                     forecast.save()
         except Exception as e:
-            print(e)
+            print(f"Error forecasting site {site_id}: {e}")
 
     def _get_all_site_ids(self) -> list:
         Session = sessionmaker(

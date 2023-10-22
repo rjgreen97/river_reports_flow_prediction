@@ -55,18 +55,22 @@ class DataFetcher:
 
     def _get_date_and_flow_data(self, result) -> pd.DataFrame:
         df = pd.DataFrame(result.fetchall())
-        y = df["value"]
-        ds = df["ts"]
-        river_df = pd.DataFrame({"ds": ds, "y": y})
-        river_df["ds"] = pd.to_datetime(river_df["ds"], utc=True)
-        river_df["ds"] = river_df["ds"].dt.strftime("%Y-%m-%d %H:%M:%S")
-        river_df["ds"] = pd.to_datetime(river_df["ds"])
-        river_df["y"] = river_df["y"].astype(float)
-        river_df = river_df.drop_duplicates(subset="ds", keep="first")
-        return river_df.reset_index(drop=True)
+        if df.empty:
+            return df
+        else:
+            y = df["value"]
+            ds = df["ts"]
+            river_df = pd.DataFrame({"ds": ds, "y": y})
+            river_df["ds"] = pd.to_datetime(river_df["ds"], utc=True)
+            river_df["ds"] = river_df["ds"].dt.strftime("%Y-%m-%d %H:%M:%S")
+            river_df["ds"] = pd.to_datetime(river_df["ds"])
+            river_df["y"] = river_df["y"].astype(float)
+            river_df = river_df.drop_duplicates(subset="ds", keep="first")
+            return river_df.reset_index(drop=True)
 
 
 if __name__ == "__main__":
-    data_fetcher = DataFetcher("901f7826-7cf2-44f9-833f-9cda40ebc374")
+    data_fetcher = DataFetcher("91b65ab1-7509-450b-8910-30a1e9227cc4")
     df = data_fetcher.generate_df()
-    data_fetcher.plot_historical_flows()
+    # data_fetcher.plot_historical_flows()
+    print(df)
