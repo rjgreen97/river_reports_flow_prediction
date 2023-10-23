@@ -42,14 +42,15 @@ class DataFetcher:
         return site_data_df["source_name"].values[0]
 
     def _start_session(self) -> sessionmaker:
-        engine = create_engine("postgresql://rjgreen@localhost/riverreports")
+        database_connection_string = self.get_database_url()
+        engine = create_engine(database_connection_string)
         Session = sessionmaker(bind=engine)
         return Session()
 
     def _get_site_result(self) -> list:
         raw_sql = text(
-            f"select avg(value) as value, cast(ts as date) from rr.flow where site_id = \
-            '{self.site_id}' group by cast(ts as date) order by ts asc"
+            f"SELECT AVG(value) AS value, CAST(ts AS DATE) FROM rr.flow WHERE site_id = \
+            '{self.site_id}' GROUP BY CAST(ts AS DATE) ORDER BY ts ASC"
         )
         return self.session.execute(raw_sql)
 
@@ -68,9 +69,12 @@ class DataFetcher:
             river_df = river_df.drop_duplicates(subset="ds", keep="first")
             return river_df.reset_index(drop=True)
 
+    @staticmethod
+    def get_database_url() -> str:
+        return "postgresql://rjgreen@localhost/riverreports"
+
 
 if __name__ == "__main__":
     data_fetcher = DataFetcher("91b65ab1-7509-450b-8910-30a1e9227cc4")
     df = data_fetcher.generate_df()
-    # data_fetcher.plot_historical_flows()
-    print(df)
+    data_fetcher.plot_historical_flows()

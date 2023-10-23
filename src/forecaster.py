@@ -16,11 +16,12 @@ class Forecaster:
     def generate_forecast(self) -> Forecast:
         df = self._get_df()
         source_name = self._get_site_source_name()
-        self.model.fit(df, freq="H")
+        self.model.fit(df, freq="D")
         df_future = self.model.make_future_dataframe(
-            df, n_historic_predictions=False, periods=168
+            df, n_historic_predictions=False, periods=7
         )
         forecast_df = self.model.predict(df_future)
+        print(forecast_df)
         self._plot_forecast(forecast_df, source_name)
         return Forecast(forecast_df, site_id=self.site_id)
 

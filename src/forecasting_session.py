@@ -1,11 +1,15 @@
 from src.forecaster import Forecaster
+from src.data_fetcher import DataFetcher
 
+import psycopg2
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
+
 class ForecastingSession:
     def __init__(self):
+        self.database_url = DataFetcher.get_database_url()
         self.site_ids_list = self._get_all_site_ids()
 
     def forecast_all_sites(self) -> None:
@@ -15,16 +19,14 @@ class ForecastingSession:
                     forecaster = Forecaster(site_id)
                     forecast = forecaster.generate_forecast()
                     forecast.save()
-        except Exception as e:
+        except psycopg2.Error as e:
             print(f"Error forecasting site {site_id}: {e}")
 
     def _get_all_site_ids(self) -> list:
-        Session = sessionmaker(
-            bind=create_engine("postgresql://rjgreen@localhost/riverreports")
-        )
+        Session = sessionmaker(bind=create_engine(self.database_url))
         session = Session()
         site_ids = session.execute(
-            text("select distinct id from rr.site where show = True;")
+            text("SELECT DISTINCT id FROM rr.site WHERE show = TRUE;")
         ).fetchall()
         site_ids_df = pd.DataFrame(site_ids)
         uuid_list = site_ids_df["id"].tolist()
