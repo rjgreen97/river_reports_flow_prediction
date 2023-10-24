@@ -1,8 +1,4 @@
 from src.forecast import Forecast
-from src.forecaster import Forecaster
-import datetime as dt
-import numpy as np
-from pandas import Timestamp
 import pandas as pd
 
 

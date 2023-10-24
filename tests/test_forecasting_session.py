@@ -1,5 +1,4 @@
 from src.forecasting_session import ForecastingSession
-from src.data_fetcher import DataFetcher
 
 
 def test_init():
