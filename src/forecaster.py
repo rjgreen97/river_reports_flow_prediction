@@ -16,6 +16,7 @@ class Forecaster:
     def generate_forecast(self) -> Forecast:
         df = self._get_df()
         source_name = self._get_site_source_name()
+        print(f"Predicting for Site ID: {self.site_id}")
         self.model.fit(df, freq="D")
         df_future = self.model.make_future_dataframe(
             df, n_historic_predictions=False, periods=7
