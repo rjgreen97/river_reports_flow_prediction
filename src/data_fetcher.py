@@ -49,8 +49,7 @@ class DataFetcher:
 
     def _get_site_result(self) -> list:
         raw_sql = text(
-            f"SELECT AVG(value) AS value, CAST(ts AS DATE) FROM rr.flow WHERE site_id = \
-            '{self.site_id}' GROUP BY CAST(ts AS DATE) ORDER BY ts ASC"
+            f"SELECT AVG(value) AS value, CAST(ts AS DATE) FROM rr.flow WHERE site_id = '{self.site_id}' GROUP BY CAST(ts AS DATE) ORDER BY ts ASC"
         )
         return self.session.execute(raw_sql)
 

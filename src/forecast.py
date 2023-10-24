@@ -43,15 +43,3 @@ class Forecast:
             columns={"ds": "ts", "yhat1": "value"}
         )
         return forecast_df
-
-
-if __name__ == "__main__":
-    from src.forecaster import Forecaster
-
-    forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
-    forecast = forecaster.generate_forecast()
-    df = forecast._parse_dataframe()
-    values = forecast._format_values(df)
-    print("\n=========================")
-    print(f"values: {values}")
-    print("=========================")
