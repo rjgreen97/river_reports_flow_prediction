@@ -21,6 +21,7 @@ def test_generate_forecast():
         "data/forecasted_flow_plots/roaring_fork_river_blw_maroon_creek_nr_aspen_co_forecast.png"
     )
 
+
 def test_get_df():
     forecaster = Forecaster("91b65ab1-7509-450b-8910-30a1e9227cc4")
     df = forecaster._get_df()

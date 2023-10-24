@@ -32,10 +32,12 @@ def test_get_site_source_name():
     source_name = data_fetcher.get_site_source_name()
     assert source_name == "Stones River below J Percy Priest Dam"
 
+
 def test_get_database_url():
     data_fetcher = DataFetcher("901f7826-7cf2-44f9-833f-9cda40ebc374")
     connection_string = data_fetcher.get_database_url()
     assert connection_string == "postgresql://rjgreen@localhost/riverreports"
+
 
 def test_start_session():
     data_fetcher = DataFetcher("901f7826-7cf2-44f9-833f-9cda40ebc374")

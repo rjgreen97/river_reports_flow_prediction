@@ -5,6 +5,7 @@ import numpy as np
 from pandas import Timestamp
 import pandas as pd
 
+
 def test_init():
     data = {
         "ds": [
@@ -40,6 +41,7 @@ def test_init():
     assert forecast.site_id == "91b65ab1-7509-450b-8910-30a1e9227cc4"
     assert forecast.engine.url.database == "riverreports"
 
+
 def test_generate_raw_sql():
     data = {
         "ds": [
@@ -72,7 +74,10 @@ def test_generate_raw_sql():
     df = pd.DataFrame(data)
     forecast = Forecast(df, site_id="91b65ab1-7509-450b-8910-30a1e9227cc4")
     sql = forecast._generate_raw_sql()
-    assert sql == "INSERT INTO rr.forecast(site_id, ts, value) VALUES ('91b65ab1-7509-450b-8910-30a1e9227cc4', '2023-09-28', 214.21), ('91b65ab1-7509-450b-8910-30a1e9227cc4', '2023-09-29', 218.92), ('91b65ab1-7509-450b-8910-30a1e9227cc4', '2023-09-30', 219.21) ON CONFLICT (site_id, ts) DO UPDATE SET value = EXCLUDED.value;"
+    assert (
+        sql
+        == "INSERT INTO rr.forecast(site_id, ts, value) VALUES ('91b65ab1-7509-450b-8910-30a1e9227cc4', '2023-09-28', 214.21), ('91b65ab1-7509-450b-8910-30a1e9227cc4', '2023-09-29', 218.92), ('91b65ab1-7509-450b-8910-30a1e9227cc4', '2023-09-30', 219.21) ON CONFLICT (site_id, ts) DO UPDATE SET value = EXCLUDED.value;"
+    )
 
 
 def test_parse_dataframe():
