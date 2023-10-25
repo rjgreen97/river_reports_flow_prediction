@@ -1,18 +1,19 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from src.data_fetcher import DataFetcher
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class Forecast:
     def __init__(self, df: pd.DataFrame, site_id: str) -> None:
         self.df = df
         self.site_id = site_id
-        self.database_url = DataFetcher.get_database_url()
-        self.engine = create_engine(self.database_url)
 
     def save(self) -> None:
-        Session = sessionmaker(bind=self.engine)
+        Session = sessionmaker(bind=create_engine(os.getenv("DATABASE_URL")))
         with Session() as session:
             raw_sql = self._generate_raw_sql()
             session.execute(text(raw_sql))

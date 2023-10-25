@@ -5,7 +5,6 @@ def test_init():
     forecasting_session = ForecastingSession()
     assert isinstance(forecasting_session.site_ids_list, list)
     assert len(forecasting_session.site_ids_list) > 0
-    assert isinstance(forecasting_session.database_url, str)
 
 
 def test_get_all_site_ids():

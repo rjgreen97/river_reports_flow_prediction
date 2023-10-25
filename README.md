@@ -4,6 +4,5 @@
 
 ## Order of Operations
 1) Use code found in **forecasting.sql** to create a `forecast` table
-2) Set the database URL in `get_database_url()` found in **src/database_fetcher.py**
-3) run `bin/forecasting_session` which will create a **ForcastingSession** object
-4) The **ForcastingSession** object will create forecasts for all sites and write 7-day predictions to the `forecast` table
+2) Create a `.env` file and set the database URL to the `DATABASE_URL` key
+3) run `bin/forecasting_session` which will create a **ForcastingSession** object, creating forecasts for all sites and write 7-day predictions to the `forecast` table

@@ -2,7 +2,7 @@
 tmp/*
 tmp_data/*
 lightning_logs/
-data/
+forecasted_flow/
 
 # Python bytecode files
 __pycache__/

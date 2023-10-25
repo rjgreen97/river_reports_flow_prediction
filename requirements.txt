@@ -1,4 +1,5 @@
 neuralprophet==0.6.2
 pandas==1.5.0
 psycopg2==2.9.7
+python-dotenv==1.0.0
 SQLAlchemy==2.0.20
