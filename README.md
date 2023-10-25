@@ -5,5 +5,5 @@
 ## Order of Operations
 1) Use code found in **forecasting.sql** to create a `forecast` table
 2) Create a `.env` file and set the database URL a `DATABASE_URL` key in the following format: 
-    `DATABASE_URL = "postgres://[user]:[pass]@[host]:[port]/[db]"`
-3) run `bin/forecasting_session` which will create a **ForcastingSession** object, creating forecasts for all sites and write 7-day predictions to the `forecast` table
+* `DATABASE_URL = "postgres://{user}:{pass}@{host}:{port}/{db}"`
+3) run `bin/forecasting_session` which will create a **ForcastingSession** object, which in turn will create forecasts for all flow sites and write 7-day predictions to the `forecast` table
