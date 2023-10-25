@@ -1,8 +1,6 @@
 from src.forecaster import Forecaster
 from src.flow_site import FlowSite
 from src.forecast import Forecast
-import os
-import pandas as pd
 
 
 def test_init():
