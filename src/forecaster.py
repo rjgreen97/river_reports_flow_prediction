@@ -12,14 +12,9 @@ class Forecaster:
     def generate_forecast(self) -> Forecast:
         model = NeuralProphet()
         print(f"Predicting for Site ID: {self.flow_site.id}")
-        model.fit(self.flow_site.df, freq="D")
+        model.fit(self.flow_site.df, freq="D", epochs=100)
         df_future = model.make_future_dataframe(
             self.flow_site.df, n_historic_predictions=False, periods=7
         )
         forecast_df = model.predict(df_future)
         return Forecast(forecast_df, site_id=self.flow_site.id)
-
-
-if __name__ == "__main__":
-    forecaster = Forecaster(FlowSite.for_id("91b65ab1-7509-450b-8910-30a1e9227cc4"))
-    forecaster.generate_forecast()

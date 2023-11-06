@@ -1,7 +1,5 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 import pandas as pd
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,24 +7,19 @@ load_dotenv()
 
 class FlowSite:
     @classmethod
-    def for_id(cls, site_id: str) -> str:
-        flow_site = cls(site_id)
+    def for_id(cls, site_id: str, session) -> str:
+        flow_site = cls(site_id, session)
         flow_site.load_data()
         return flow_site
 
-    def __init__(self, id: str):
+    def __init__(self, id: str, session):
         self.id = id
-        self.session = self._start_session()
+        self.session = session
 
     def load_data(self) -> None:
         result = self._get_site_result()
         self.df = self._get_date_and_flow_data(result)
         self.session.close()
-
-    def _start_session(self) -> sessionmaker:
-        engine = create_engine(os.getenv("DATABASE_URL"))
-        Session = sessionmaker(bind=engine)
-        return Session()
 
     def _get_site_result(self) -> list:
         raw_sql = text(
@@ -48,6 +41,3 @@ class FlowSite:
             river_df["y"] = river_df["y"].astype(float)
             river_df = river_df.drop_duplicates(subset="ds", keep="first")
             return river_df.reset_index(drop=True)
-
-if __name__ == "__main__":
-    flow_site = FlowSite.for_id("91b65ab1-7509-450b-8910-30a1e9227cc4")
