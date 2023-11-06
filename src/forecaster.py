@@ -12,7 +12,13 @@ class Forecaster:
     def generate_forecast(self) -> Forecast:
         model = NeuralProphet()
         print(f"Predicting for Site ID: {self.flow_site.id}")
-        model.fit(self.flow_site.df, freq="D", epochs=100)
+        model.fit(
+            self.flow_site.df,
+            freq="D",
+            early_stopping=False,
+            epochs=250,
+            metrics=["MSE"],
+        )
         df_future = model.make_future_dataframe(
             self.flow_site.df, n_historic_predictions=False, periods=7
         )

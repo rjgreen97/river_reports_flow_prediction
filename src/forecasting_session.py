@@ -47,6 +47,7 @@ class ForecastingSession:
         Session = sessionmaker(bind=engine)
         return Session()
 
+
 if __name__ == "__main__":
     forecasting_session = ForecastingSession()
     forecasting_session.forecast_all_sites()
