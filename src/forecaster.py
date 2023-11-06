@@ -15,9 +15,9 @@ class Forecaster:
         model.fit(
             self.flow_site.df,
             freq="D",
-            early_stopping=False,
             epochs=250,
             metrics=["MSE"],
+            early_stopping=False,
         )
         df_future = model.make_future_dataframe(
             self.flow_site.df, n_historic_predictions=False, periods=7
