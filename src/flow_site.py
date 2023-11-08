@@ -10,6 +10,7 @@ class FlowSite:
     def for_id(cls, site_id: str, session) -> str:
         flow_site = cls(site_id, session)
         flow_site.load_data()
+        session.close()
         return flow_site
 
     def __init__(self, id: str, session):
