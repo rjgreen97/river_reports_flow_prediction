@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Make sure there are no active database session running!!!
-
 # Database information
 REMOTE_DB_HOST="jobs.riverreports.com"
 REMOTE_DB_PORT="5432"
