@@ -19,15 +19,15 @@ if psql -lqt | cut -d \| -f 1 | grep -qw $LOCAL_DB_NAME; then
   dropdb -U $LOCAL_DB_USER $LOCAL_DB_NAME
 fi
 
-# # Create a new local database
+# Create a new local database
 echo "Creating a new local database..."
 createdb -U $LOCAL_DB_USER $LOCAL_DB_NAME
 
-# # Load data into the local database
+# Load data into the local database
 echo "Loading data into the local database..."
 psql -U $LOCAL_DB_USER -d $LOCAL_DB_NAME -w < dump.sql
 
-# # Clean up the dump file
+# Clean up the dump file
 rm dump.sql
 
 echo "Data transfer complete!"
