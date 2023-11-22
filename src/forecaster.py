@@ -15,7 +15,7 @@ class Forecaster:
         model.fit(
             self.flow_site.df,
             freq="D",
-            epochs=250,
+            epochs=250, #try 1000
             metrics=["MSE"],
             early_stopping=False,
         )

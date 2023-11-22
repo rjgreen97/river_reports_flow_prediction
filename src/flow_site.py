@@ -1,6 +1,7 @@
 from sqlalchemy import text
 import pandas as pd
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -23,8 +24,13 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
+        one_year_ago = datetime.now() - timedelta(days=3000)
         raw_sql = text(
-            f"SELECT AVG(value) AS value, CAST(ts AS DATE) FROM rr.flow WHERE site_id = '{self.id}' GROUP BY CAST(ts AS DATE) ORDER BY ts ASC"
+            f"SELECT AVG(value) AS value, CAST(ts AS DATE) "
+            f"FROM rr.flow "
+            f"WHERE site_id = '{self.id}' AND ts >= '{one_year_ago.strftime('%Y-%m-%d')}' "
+            f"GROUP BY CAST(ts AS DATE) "
+            f"ORDER BY ts ASC"
         )
         return self.session.execute(raw_sql)
 

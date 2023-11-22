@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Make sure and terminate any active sessions, check first by running:
+# SELECT * FROM pg_stat_activity;
+# Take the PID's from any displayed active sessions and run the following:
+# SELECT pg_terminate_backend(<pid>);
+# Close dbeaver
+
 # Database information
 REMOTE_DB_HOST="jobs.riverreports.com"
 REMOTE_DB_PORT="5432"
@@ -8,6 +14,7 @@ REMOTE_DB_USER="rrdev"
 
 LOCAL_DB_NAME="riverreports"
 LOCAL_DB_USER="rjgreen"
+
 
 # Dump data from the remote database
 echo "Dumping data from the remote database..."
