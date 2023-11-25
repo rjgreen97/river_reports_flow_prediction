@@ -28,7 +28,8 @@ class FlowSite:
         raw_sql = text(
             f"SELECT AVG(value) AS value, CAST(ts AS DATE) "
             f"FROM rr.flow "
-            f"WHERE site_id = '{self.id}' AND ts >= '{one_year_ago.strftime('%Y-%m-%d')}' "
+            f"WHERE site_id = '{self.id}' "
+            # f"WHERE site_id = '{self.id}' AND ts >= '{one_year_ago.strftime('%Y-%m-%d')}' "
             f"GROUP BY CAST(ts AS DATE) "
             f"ORDER BY ts ASC"
         )
