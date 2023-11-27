@@ -3,6 +3,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
+from neuralprophet import df_utils
+
 load_dotenv()
 
 
@@ -48,4 +50,5 @@ class FlowSite:
             river_df["ds"] = pd.to_datetime(river_df["ds"])
             river_df["y"] = river_df["y"].astype(float)
             river_df = river_df.drop_duplicates(subset="ds", keep="first")
+            river_df = df_utils.add_quarter_condition(river_df)
             return river_df.reset_index(drop=True)
