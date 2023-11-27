@@ -26,12 +26,12 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
-        one_year_ago = datetime.now() - timedelta(days=3000)
+        data_lookback_window = datetime.now() - timedelta(days=3000)
         raw_sql = text(
             f"SELECT AVG(value) AS value, CAST(ts AS DATE) "
             f"FROM rr.flow "
             f"WHERE site_id = '{self.id}' "
-            f"WHERE site_id = '{self.id}' AND ts >= '{one_year_ago.strftime('%Y-%m-%d')}' "
+            f"WHERE site_id = '{self.id}' AND ts >= '{data_lookback_window.strftime('%Y-%m-%d')}' "
             f"GROUP BY CAST(ts AS DATE) "
             f"ORDER BY ts ASC"
         )
