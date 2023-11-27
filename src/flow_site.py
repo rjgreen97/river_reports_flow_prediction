@@ -3,6 +3,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
+from neuralprophet import df_utils
+
 load_dotenv()
 
 
@@ -28,7 +30,8 @@ class FlowSite:
         raw_sql = text(
             f"SELECT AVG(value) AS value, CAST(ts AS DATE) "
             f"FROM rr.flow "
-            f"WHERE site_id = '{self.id}' AND ts >= '{one_year_ago.strftime('%Y-%m-%d')}' "
+            f"WHERE site_id = '{self.id}' "
+            # f"WHERE site_id = '{self.id}' AND ts >= '{one_year_ago.strftime('%Y-%m-%d')}' "
             f"GROUP BY CAST(ts AS DATE) "
             f"ORDER BY ts ASC"
         )
@@ -47,4 +50,5 @@ class FlowSite:
             river_df["ds"] = pd.to_datetime(river_df["ds"])
             river_df["y"] = river_df["y"].astype(float)
             river_df = river_df.drop_duplicates(subset="ds", keep="first")
+            river_df = df_utils.add_quarter_condition(river_df)
             return river_df.reset_index(drop=True)

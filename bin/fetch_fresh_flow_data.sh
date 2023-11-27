@@ -1,10 +1,14 @@
 #!/bin/bash
 
-# Make sure and terminate any active sessions, check first by running:
-# SELECT * FROM pg_stat_activity;
-# Take the PID's from any displayed active sessions and run the following:
-# SELECT pg_terminate_backend(<pid>);
-# Close dbeaver
+"""
+1) Make sure and terminate any active sessions, check first by running:
+  SELECT * FROM pg_stat_activity;
+
+2) Take the PID's from any displayed active sessions and run the following:
+  SELECT pg_terminate_backend(<pid>);
+
+3) Close dbeaver
+"""
 
 # Database information
 REMOTE_DB_HOST="jobs.riverreports.com"
