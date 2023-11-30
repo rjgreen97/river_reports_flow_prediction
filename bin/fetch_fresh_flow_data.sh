@@ -1,12 +1,13 @@
 #!/bin/bash
+set -e
+set -x
 
-# 1) Make sure and terminate any active sessions, check first by running:
-#   SELECT * FROM pg_stat_activity;
+# if running on remote server, use the tunneling command below before this bin script:
+#ssh -L 1111:localhost:5432 sideshow
 
-# 2) Take the PID's from any displayed active sessions and run the following:
-#   SELECT pg_terminate_backend(<pid>);
-
-# 3) Close dbeaver
+# next, use the following commands to terminate 2 active conncetions, then close DBeaver:
+# SELECT * FROM pg_stat_activity WHERE datname = 'riverreports';
+# SELECT pg_terminate_backend(<pid>);
 
 # Database information
 REMOTE_DB_HOST="jobs.riverreports.com"
@@ -17,26 +18,26 @@ REMOTE_DB_USER="rrdev"
 LOCAL_DB_NAME="riverreports"
 LOCAL_DB_USER="rjgreen"
 
+# Print current working directory
+echo "Script is running as user: $(whoami)"
+echo "Current working directory: $(pwd)"
 
-# Dump data from the remote database
 echo "Dumping data from the remote database..."
 pg_dump -h $REMOTE_DB_HOST -p $REMOTE_DB_PORT -U $REMOTE_DB_USER -d $REMOTE_DB_NAME -W > dump.sql
 
-# # Drop the local database if it exists
+echo "Checking if local database exists..."
 if psql -lqt | cut -d \| -f 1 | grep -qw $LOCAL_DB_NAME; then
   echo "Dropping the existing local database..."
   dropdb -U $LOCAL_DB_USER $LOCAL_DB_NAME
 fi
 
-# Create a new local database
 echo "Creating a new local database..."
 createdb -U $LOCAL_DB_USER $LOCAL_DB_NAME
 
-# Load data into the local database
 echo "Loading data into the local database..."
 psql -U $LOCAL_DB_USER -d $LOCAL_DB_NAME -w < dump.sql
 
-# Clean up the dump file
+echo "Cleaning up the dump file..."
 rm dump.sql
 
 echo "Data transfer complete!"
