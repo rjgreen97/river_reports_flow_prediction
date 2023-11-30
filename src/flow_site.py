@@ -2,7 +2,6 @@ from sqlalchemy import text
 import pandas as pd
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-
 from neuralprophet import df_utils
 
 load_dotenv()
@@ -26,12 +25,12 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
-        data_lookback_window = datetime.now() - timedelta(days=3652) # 10 years
+        # data_lookback_window = datetime.now() - timedelta(days=3652)  # 10 years
         raw_sql = text(
             f"SELECT AVG(value) AS value, CAST(ts AS DATE) "
             f"FROM rr.flow "
             f"WHERE site_id = '{self.id}' "
-            f"WHERE site_id = '{self.id}' AND ts >= '{data_lookback_window.strftime('%Y-%m-%d')}' "
+            # f"AND ts >= '{data_lookback_window.strftime('%Y-%m-%d')}' "
             f"GROUP BY CAST(ts AS DATE) "
             f"ORDER BY ts ASC"
         )

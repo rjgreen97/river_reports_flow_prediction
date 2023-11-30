@@ -25,7 +25,10 @@ class Forecast:
 
     def _dataframe_to_sql(self, df) -> str:
         values = self._format_values(df)
-        return f"INSERT INTO rr.forecast(site_id, ts, value) VALUES {values} ON CONFLICT (site_id, ts) DO UPDATE SET value = EXCLUDED.value;"
+        return (
+            f"INSERT INTO rr.forecast(site_id, ts, value) VALUES {values}"
+            "ON CONFLICT (site_id, ts) DO UPDATE SET value = EXCLUDED.value;"
+        )
 
     def _format_values(self, df) -> str:
         values = []
