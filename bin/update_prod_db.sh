@@ -8,7 +8,7 @@ REMOTE_DB_USER="rrdev"
 LOCAL_DB_NAME="riverreports"
 LOCAL_DB_USER="rjgreen"
 TABLE_NAME="rr.forecast"
-PATH_TO_LOCAL_FORECAST_TABLE="/Users/rjgreen/forecast.sql"
+PATH_TO_LOCAL_FORECAST_TABLE="/home/rjgreen/code/river_reports_flow_prediction/forecast.sql"
 
 # Dump forecast table locally
 echo "Downloading forecast table..."

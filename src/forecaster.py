@@ -1,11 +1,9 @@
 from src.flow_site import FlowSite
-from neuralprophet import NeuralProphet, set_log_level, df_utils
+from neuralprophet import NeuralProphet, df_utils
 from src.forecast import Forecast
 import torch
 import time
 import pandas as pd
-
-set_log_level("INFO")
 
 
 class Forecaster:
@@ -27,8 +25,8 @@ class Forecaster:
 
     def _create_neural_prophet_model(self) -> NeuralProphet:
         return NeuralProphet(
-            weekly_seasonality=False,
-            daily_seasonality=False,
+            weekly_seasonality="auto",
+            daily_seasonality="auto",
             accelerator=self.device,
             batch_size=8,
         )
