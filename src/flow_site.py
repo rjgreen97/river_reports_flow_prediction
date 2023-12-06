@@ -2,7 +2,6 @@ from sqlalchemy import text
 import pandas as pd
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from neuralprophet import df_utils
 
 load_dotenv()
 
@@ -25,7 +24,7 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
-        data_lookback_window = datetime.now() - timedelta(days=3652)  
+        data_lookback_window = datetime.now() - timedelta(days=3652)
         raw_sql = text(
             f"SELECT AVG(value) AS value, CAST(ts AS DATE) "
             f"FROM rr.flow "
@@ -49,19 +48,15 @@ class FlowSite:
             river_df["ds"] = pd.to_datetime(river_df["ds"])
             river_df["y"] = river_df["y"].astype(float)
             river_df = river_df.drop_duplicates(subset="ds", keep="first")
-            river_df = df_utils.add_quarter_condition(river_df)
             return river_df.reset_index(drop=True)
+
 
 if __name__ == "__main__":
     import os
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
-    from tsfresh import extract_features
-    from tsfresh.utilities.dataframe_functions import make_forecasting_frame
-    from tsfresh.utilities.dataframe_functions import roll_time_series
-    from tsfresh.feature_extraction import ComprehensiveFCParameters, MinimalFCParameters
 
-    site_id = '964ed893-2871-40ab-a3a4-93af1530d199'
+    site_id = "964ed893-2871-40ab-a3a4-93af1530d199"
     Session = sessionmaker(bind=create_engine(os.getenv("DATABASE_URL")))
     with Session() as session:
         flow_site = FlowSite.for_id(site_id, session)

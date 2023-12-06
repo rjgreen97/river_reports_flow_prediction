@@ -1,63 +1,53 @@
 from src.flow_site import FlowSite
-from neuralprophet import NeuralProphet, df_utils
 from src.forecast import Forecast
-import torch
-import time
+
 import pandas as pd
+import warnings
+
+from statsmodels.tools.sm_exceptions import ConvergenceWarning, ValueWarning
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from pmdarima import auto_arima
+
+
+warnings.filterwarnings(
+    "ignore", category=UserWarning, module="statsmodels.tsa.base.tsamod"
+)
+warnings.filterwarnings(
+    "ignore", category=ConvergenceWarning, module="statsmodels.base.model"
+)
+warnings.filterwarnings("ignore", category=ValueWarning, module="statsmodels.tsa.base")
 
 
 class Forecaster:
     def __init__(self, flow_site: FlowSite) -> None:
         self.flow_site = flow_site
-        self.device = "gpu" if torch.cuda.is_available() else "cpu"
-        print(f"Using device: {self.device}")
 
     def generate_forecast(self) -> Forecast:
-        start_time = time.time()
-        model = self._create_neural_prophet_model()
-        self._add_custom_seasonalities(model)
-        self._fit_model(model)
-        df_future = self._create_future_dataframe(model)
-        forecast_df = self._predict_future(model, df_future)
-        end_time = time.time()
-        print(f"Elapsed time: {((end_time - start_time) / 60):.2f} minutes\n")
+        forecast_df = self.arima()
         return Forecast(forecast_df, site_id=self.flow_site.id)
 
-    def _create_neural_prophet_model(self) -> NeuralProphet:
-        return NeuralProphet(
-            weekly_seasonality="auto",
-            daily_seasonality="auto",
-            accelerator=self.device,
-            batch_size=8,
+    def arima(self):
+        self.flow_site.df["ds"] = pd.to_datetime(self.flow_site.df["ds"])
+        self.flow_site.df.sort_values(by="ds", inplace=True)
+        self.flow_site.df.set_index("ds", inplace=True)
+        self.flow_site.df["y"] = self.flow_site.df["y"].fillna(0)
+
+        num_periods = len(self.flow_site.df.index)
+        self.flow_site.df.index = pd.date_range(
+            start=self.flow_site.df.index.min(), periods=num_periods, freq="D"
         )
 
-    def _add_custom_seasonalities(self, model: NeuralProphet) -> None:
-        seasons = ["summer", "fall", "winter", "spring"]
-        for season in seasons:
-            model.add_seasonality(
-                name=f"weekly_{season}",
-                period=7,
-                fourier_order=3,
-                condition_name=season,
-            )
-
-    def _fit_model(self, model: NeuralProphet) -> None:
-        print(f"Predicting for Site ID: {self.flow_site.id}")
-        model.fit(
-            self.flow_site.df,
-            freq="D",
-            epochs=1000,
-            metrics=["MSE"],
-            early_stopping=False,
+        arima_param_finder = auto_arima(
+            self.flow_site.df["y"], seasonal=True, suppress_warnings=True
         )
+        p, d, q = arima_param_finder.get_params()["order"]
+        sarima = SARIMAX(self.flow_site.df["y"], order=(p, d, q), freq="D")
 
-    def _create_future_dataframe(self, model) -> pd.DataFrame:
-        df_future = model.make_future_dataframe(
-            self.flow_site.df, n_historic_predictions=False, periods=7
-        )
-        return df_utils.add_quarter_condition(df_future)
+        results = sarima.fit()
+        forecast = results.get_forecast(steps=7)
+        forecast_values = forecast.predicted_mean
+        forecast_values = forecast_values.to_frame()
 
-    def _predict_future(
-        self, model: NeuralProphet, df_future: pd.DataFrame
-    ) -> pd.DataFrame:
-        return model.predict(df_future)
+        if self.flow_site.df["y"].iloc[-3:].sum() == 0:
+            forecast_values["predicted_mean"] = 0
+        return forecast_values
