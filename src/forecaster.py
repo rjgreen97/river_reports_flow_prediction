@@ -41,9 +41,9 @@ class Forecaster:
             self.flow_site.df["y"], seasonal=True, suppress_warnings=True
         )
         p, d, q = arima_param_finder.get_params()["order"]
-        sarima = SARIMAX(self.flow_site.df["y"], order=(p, d, q), freq="D")
+        seasonal_arima = SARIMAX(self.flow_site.df["y"], order=(p, d, q), freq="D")
 
-        results = sarima.fit()
+        results = seasonal_arima.fit()
         forecast = results.get_forecast(steps=7)
         forecast_values = forecast.predicted_mean
         forecast_values = forecast_values.to_frame()
