@@ -24,19 +24,20 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
-        data_lookback_window = datetime.now() - timedelta(days=3652)
+        data_lookback_window = datetime.now() - timedelta(days=1827)  # TODO make sure 5 years is enough
         raw_sql = text(
-            f"SELECT AVG(value) AS value, CAST(ts AS DATE) "
+            f"SELECT AVG(value) AS value, DATE_TRUNC('hour', ts) AS ts "
             f"FROM rr.flow "
             f"WHERE site_id = '{self.id}' "
             f"AND ts >= '{data_lookback_window.strftime('%Y-%m-%d')}' "
-            f"GROUP BY CAST(ts AS DATE) "
-            f"ORDER BY ts ASC"
-        )
+            f"GROUP BY DATE_TRUNC('hour', ts) "
+            f"ORDER BY DATE_TRUNC('hour', ts) ASC"
+        ) 
         return self.session.execute(raw_sql)
 
-    def _get_date_and_flow_data(self, result) -> pd.DataFrame:
+    def _get_date_and_flow_data(self, result) -> pd.DataFrame: # TODO make sure this is hourly data for all sites
         df = pd.DataFrame(result.fetchall())
+        
         if df.empty:
             return df
         else:
@@ -48,16 +49,21 @@ class FlowSite:
             river_df["ds"] = pd.to_datetime(river_df["ds"])
             river_df["y"] = river_df["y"].astype(float)
             river_df = river_df.drop_duplicates(subset="ds", keep="first")
-            return river_df.reset_index(drop=True)
-
+            
+            river_df = river_df.set_index('ds')
+            river_df = river_df.resample('H').mean()
+            river_df['y'] = river_df['y'].interpolate(method='linear')
+            river_df = river_df.reset_index()
+            return river_df
 
 if __name__ == "__main__":
     import os
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
-    site_id = "964ed893-2871-40ab-a3a4-93af1530d199"
+    site_id = "fc66ab47-75d7-487c-969e-5c25f66ed0e7"
     Session = sessionmaker(bind=create_engine(os.getenv("DATABASE_URL")))
     with Session() as session:
         flow_site = FlowSite.for_id(site_id, session)
         df = flow_site.df
+    print(df)

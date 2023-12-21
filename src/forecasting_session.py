@@ -22,6 +22,11 @@ class ForecastingSession:
             for site_id in self.site_ids_list:
                 if site_id not in excluded_sites:
                     flow_site = FlowSite.for_id(site_id, self.db_session)
+                    
+                    # TODO verify this hack works
+                    if flow_site.df.empty or flow_site.df["ds"].max() < pd.Timestamp.now() - pd.Timedelta(days=1):
+                        continue 
+
                     forecaster = Forecaster(flow_site)
                     forecast = forecaster.generate_forecast()
                     forecast.save()

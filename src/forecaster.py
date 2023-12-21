@@ -32,19 +32,19 @@ class Forecaster:
         self.flow_site.df.set_index("ds", inplace=True)
         self.flow_site.df["y"] = self.flow_site.df["y"].fillna(0)
 
-        num_periods = len(self.flow_site.df.index)
+        num_periods = len(self.flow_site.df.index) #TODO will this be hourly data once ingestion is fixed?
         self.flow_site.df.index = pd.date_range(
-            start=self.flow_site.df.index.min(), periods=num_periods, freq="D"
+            start=self.flow_site.df.index.min(), periods=num_periods, freq="H" #TODO is this hourly data?
         )
 
         arima_param_finder = auto_arima(
             self.flow_site.df["y"], seasonal=True, suppress_warnings=True
         )
         p, d, q = arima_param_finder.get_params()["order"]
-        seasonal_arima = SARIMAX(self.flow_site.df["y"], order=(p, d, q), freq="D")
+        seasonal_arima = SARIMAX(self.flow_site.df["y"], order=(p, d, q), freq="H") #TODO is this hourly data?
 
         results = seasonal_arima.fit()
-        forecast = results.get_forecast(steps=7)
+        forecast = results.get_forecast(steps=72) #TODO is this 3 days of hourly data?
         forecast_values = forecast.predicted_mean
         forecast_values = forecast_values.to_frame()
 
