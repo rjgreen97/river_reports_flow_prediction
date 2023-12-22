@@ -61,7 +61,7 @@ if __name__ == "__main__":
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
-    site_id = "fc66ab47-75d7-487c-969e-5c25f66ed0e7"
+    site_id = "dadf4f4e-2fbc-49c3-ae24-4313429e6e3b"
     Session = sessionmaker(bind=create_engine(os.getenv("DATABASE_URL")))
     with Session() as session:
         flow_site = FlowSite.for_id(site_id, session)
