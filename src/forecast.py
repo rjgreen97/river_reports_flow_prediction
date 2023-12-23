@@ -55,7 +55,7 @@ if __name__ == "__main__":
     from src.flow_site import FlowSite
     from src.forecaster import Forecaster
 
-    site_id = "0113ca79-5f3d-4660-989f-71fd1525d5be"
+    site_id = "dadf4f4e-2fbc-49c3-ae24-4313429e6e3b"
     Session = sessionmaker(bind=create_engine(os.getenv("DATABASE_URL")))
     with Session() as session:
         flow_site = FlowSite.for_id(site_id, session)

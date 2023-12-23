@@ -24,7 +24,8 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
-        data_lookback_window = datetime.now() - timedelta(days=1827)  # TODO make sure 5 years is enough
+        # TODO how much data do we want to pull?
+        data_lookback_window = datetime.now() - timedelta(days=1827)  # 5 years
         raw_sql = text(
             f"SELECT AVG(value) AS value, DATE_TRUNC('hour', ts) AS ts "
             f"FROM rr.flow "
@@ -32,12 +33,12 @@ class FlowSite:
             f"AND ts >= '{data_lookback_window.strftime('%Y-%m-%d')}' "
             f"GROUP BY DATE_TRUNC('hour', ts) "
             f"ORDER BY DATE_TRUNC('hour', ts) ASC"
-        ) 
+        )
         return self.session.execute(raw_sql)
 
-    def _get_date_and_flow_data(self, result) -> pd.DataFrame: # TODO make sure this is hourly data for all sites
+    def _get_date_and_flow_data(self, result) -> pd.DataFrame:
         df = pd.DataFrame(result.fetchall())
-        
+
         if df.empty:
             return df
         else:
@@ -49,12 +50,13 @@ class FlowSite:
             river_df["ds"] = pd.to_datetime(river_df["ds"])
             river_df["y"] = river_df["y"].astype(float)
             river_df = river_df.drop_duplicates(subset="ds", keep="first")
-            
-            river_df = river_df.set_index('ds')
-            river_df = river_df.resample('H').mean()
-            river_df['y'] = river_df['y'].interpolate(method='linear')
+
+            river_df = river_df.set_index("ds")
+            river_df = river_df.resample("H").mean()
+            river_df["y"] = river_df["y"].interpolate(method="linear")
             river_df = river_df.reset_index()
             return river_df
+
 
 if __name__ == "__main__":
     import os
