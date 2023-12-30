@@ -8,6 +8,7 @@ from statsmodels.tools.sm_exceptions import ConvergenceWarning, ValueWarning
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from pmdarima import auto_arima
 
+# TODO fix these goddamn warnings
 
 # warnings.filterwarnings(
 #     "ignore", category=UserWarning, module="statsmodels.tsa.base.tsamod"
@@ -27,6 +28,7 @@ class Forecaster:
         return Forecast(forecast_df, site_id=self.flow_site.id)
 
     def arima(self):
+        # TODO if we use ~90s days, do we need seasonal arima?
         self.flow_site.df["ds"] = pd.to_datetime(self.flow_site.df["ds"])
         self.flow_site.df.sort_values(by="ds", inplace=True)
         self.flow_site.df.set_index("ds", inplace=True)

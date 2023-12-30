@@ -2,8 +2,8 @@
 set -e
 set -x
 
-# if running on sideshow, use the tunneling command below before this bin script:
-#ssh -L 1111:localhost:5432 sideshow
+# if training with sideshow, use tuneling script below:
+# ssh -L 1111:localhost:5432 sideshow
 
  Database information
 REMOTE_DB_HOST="jobs.riverreports.com"

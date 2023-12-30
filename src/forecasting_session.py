@@ -23,6 +23,7 @@ class ForecastingSession:
                 if site_id not in excluded_sites:
                     flow_site = FlowSite.for_id(site_id, self.db_session)
 
+                    # TODO does this check work and do we need it?
                     time_delta = pd.Timestamp.now() - pd.Timedelta(days=1)
                     if flow_site.df.empty or flow_site.df["ds"].max() < time_delta:
                         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++")
