@@ -2,22 +2,10 @@ from src.flow_site import FlowSite
 from src.forecast import Forecast
 
 import pandas as pd
-import warnings
-
-from statsmodels.tools.sm_exceptions import ConvergenceWarning, ValueWarning
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+import itertools
+
 from pmdarima import auto_arima
-
-# TODO fix these goddamn warnings
-
-# warnings.filterwarnings(
-#     "ignore", category=UserWarning, module="statsmodels.tsa.base.tsamod"
-# )
-# warnings.filterwarnings(
-#     "ignore", category=ConvergenceWarning, module="statsmodels.base.model"
-# )
-# warnings.filterwarnings("ignore", category=ValueWarning, module="statsmodels.tsa.base")
-
 
 class Forecaster:
     def __init__(self, flow_site: FlowSite) -> None:
@@ -28,26 +16,58 @@ class Forecaster:
         return Forecast(forecast_df, site_id=self.flow_site.id)
 
     def arima(self):
-        # TODO if we use ~90s days, do we need seasonal arima?
+        print(f"Forecasting site: {self.flow_site.id}")
         self.flow_site.df["ds"] = pd.to_datetime(self.flow_site.df["ds"])
         self.flow_site.df.sort_values(by="ds", inplace=True)
         self.flow_site.df.set_index("ds", inplace=True)
-        self.flow_site.df["y"] = self.flow_site.df["y"].fillna(0)
 
         num_periods = len(self.flow_site.df.index)
         self.flow_site.df.index = pd.date_range(
-            start=self.flow_site.df.index.min(),
-            periods=num_periods,
-            freq="H",
+            start=self.flow_site.df.index.min(), periods=num_periods, freq="H"
         )
+
+        # p_values = range(0, 3)
+        # d_values = range(0, 2)
+        # q_values = range(0, 3)
+
+        # best_aic = float("inf")
+        # best_params = None
+
+        # for p, d, q in itertools.product(p_values, d_values, q_values):
+        #     try:
+        #         model = SARIMAX(
+        #             self.flow_site.df["y"],
+        #             order=(p, d, q),
+        #             freq="H",
+        #             enforce_stationarity=True,
+        #         )
+        #         results = model.fit(maxiter=1000)
+
+        #         current_aic = results.aic
+
+        #         if current_aic < best_aic:
+        #             best_aic = current_aic
+        #             best_params = (p, d, q)
+
+        #     except Exception as e:
+        #         print(f"Error for p={p}, d={d}, q={q}: {e}")
+
+        # p, d, q = best_params
 
         arima_param_finder = auto_arima(
-            self.flow_site.df["y"], seasonal=True, suppress_warnings=False
+            self.flow_site.df["y"], seasonal=True, suppress_warnings=True
         )
         p, d, q = arima_param_finder.get_params()["order"]
-        seasonal_arima = SARIMAX(self.flow_site.df["y"], order=(p, d, q), freq="H")
 
-        results = seasonal_arima.fit()
+        print(f"Running ARIMA with p={p}, d={d}, q={q}")
+        arima = SARIMAX(
+            self.flow_site.df["y"],
+            order=(p, d, q),
+            freq="H",
+            enforce_stationarity=False,
+        )
+
+        results = arima.fit(maxiter=1000)
         forecast = results.get_forecast(steps=72)
         forecast_values = forecast.predicted_mean
         forecast_values = forecast_values.to_frame()

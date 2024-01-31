@@ -24,8 +24,7 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
-        # TODO how much data do we want to pull?
-        data_lookback_window = datetime.now() - timedelta(days=1827)  # 5 years
+        data_lookback_window = datetime.now() - timedelta(hours=2160)
         raw_sql = text(
             f"SELECT AVG(value) AS value, DATE_TRUNC('hour', ts) AS ts "
             f"FROM rr.flow "
@@ -55,6 +54,7 @@ class FlowSite:
             river_df = river_df.resample("H").mean()
             river_df["y"] = river_df["y"].interpolate(method="linear")
             river_df = river_df.reset_index()
+            
             return river_df
 
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
-    site_id = "dadf4f4e-2fbc-49c3-ae24-4313429e6e3b"
+    site_id = "7fcc1904-2ca2-4357-90bf-b79301a8b18e"
     Session = sessionmaker(bind=create_engine(os.getenv("DATABASE_URL")))
     with Session() as session:
         flow_site = FlowSite.for_id(site_id, session)
