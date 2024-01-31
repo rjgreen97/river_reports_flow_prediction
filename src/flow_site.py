@@ -24,7 +24,7 @@ class FlowSite:
         self.session.close()
 
     def _get_site_result(self) -> list:
-        data_lookback_window = datetime.now() - timedelta(hours=2160)
+        data_lookback_window = datetime.now() - timedelta(hours=10000)
         raw_sql = text(
             f"SELECT AVG(value) AS value, DATE_TRUNC('hour', ts) AS ts "
             f"FROM rr.flow "

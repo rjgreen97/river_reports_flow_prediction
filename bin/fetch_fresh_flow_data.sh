@@ -5,7 +5,7 @@ set -x
 # if training with sideshow, use tuneling script below:
 # ssh -L 1111:localhost:5432 sideshow
 
- Database information
+#  Database information
 REMOTE_DB_HOST="jobs.riverreports.com"
 REMOTE_DB_PORT="5432"
 REMOTE_DB_NAME="postgres"

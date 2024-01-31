@@ -5,7 +5,6 @@ import pandas as pd
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 import itertools
 
-from pmdarima import auto_arima
 
 class Forecaster:
     def __init__(self, flow_site: FlowSite) -> None:
@@ -26,38 +25,34 @@ class Forecaster:
             start=self.flow_site.df.index.min(), periods=num_periods, freq="H"
         )
 
-        # p_values = range(0, 3)
-        # d_values = range(0, 2)
-        # q_values = range(0, 3)
+        p_values = range(0, 5)
+        d_values = range(0, 2)
+        q_values = range(0, 5)
 
-        # best_aic = float("inf")
-        # best_params = None
+        best_aic = float("inf")
+        best_params = None
 
-        # for p, d, q in itertools.product(p_values, d_values, q_values):
-        #     try:
-        #         model = SARIMAX(
-        #             self.flow_site.df["y"],
-        #             order=(p, d, q),
-        #             freq="H",
-        #             enforce_stationarity=True,
-        #         )
-        #         results = model.fit(maxiter=1000)
+        for p, d, q in itertools.product(p_values, d_values, q_values):
+            try:
+                model = SARIMAX(
+                    self.flow_site.df["y"],
+                    order=(p, d, q),
+                    freq="H",
+                    enforce_stationarity=True,
+                )
+                results = model.fit(maxiter=1000)
 
-        #         current_aic = results.aic
+                current_aic = results.aic
 
-        #         if current_aic < best_aic:
-        #             best_aic = current_aic
-        #             best_params = (p, d, q)
+                if current_aic < best_aic:
+                    best_aic = current_aic
+                    best_params = (p, d, q)
 
-        #     except Exception as e:
-        #         print(f"Error for p={p}, d={d}, q={q}: {e}")
+            except Exception as e:
+                print(f"Error for p={p}, d={d}, q={q}: {e}")
 
-        # p, d, q = best_params
+        p, d, q = best_params
 
-        arima_param_finder = auto_arima(
-            self.flow_site.df["y"], seasonal=True, suppress_warnings=True
-        )
-        p, d, q = arima_param_finder.get_params()["order"]
 
         print(f"Running ARIMA with p={p}, d={d}, q={q}")
         arima = SARIMAX(
