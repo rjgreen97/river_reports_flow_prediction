@@ -55,11 +55,12 @@ if __name__ == "__main__":
     from src.flow_site import FlowSite
     from src.forecaster import Forecaster
 
-    site_id = "0113ca79-5f3d-4660-989f-71fd1525d5be"
+    site_id = "7fcc1904-2ca2-4357-90bf-b79301a8b18e"
     Session = sessionmaker(bind=create_engine(os.getenv("DATABASE_URL")))
     with Session() as session:
         flow_site = FlowSite.for_id(site_id, session)
         forecaster = Forecaster(flow_site)
         forecast = forecaster.generate_forecast()
         parsed_df = forecast._parse_dataframe()
+        pd.set_option("display.max_rows", None)
         print(parsed_df)

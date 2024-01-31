@@ -2,14 +2,10 @@
 set -e
 set -x
 
-# if running on remote server, use the tunneling command below before this bin script:
-#ssh -L 1111:localhost:5432 sideshow
+# if training with sideshow, use tuneling script below:
+# ssh -L 1111:localhost:5432 sideshow
 
-# next, use the following commands to terminate 2 active conncetions, then close DBeaver:
-# SELECT * FROM pg_stat_activity WHERE datname = 'riverreports';
-# SELECT pg_terminate_backend(<pid>);
-
-# Database information
+ Database information
 REMOTE_DB_HOST="jobs.riverreports.com"
 REMOTE_DB_PORT="5432"
 REMOTE_DB_NAME="postgres"

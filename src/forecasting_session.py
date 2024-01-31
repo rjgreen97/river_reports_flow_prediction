@@ -22,9 +22,16 @@ class ForecastingSession:
             for site_id in self.site_ids_list:
                 if site_id not in excluded_sites:
                     flow_site = FlowSite.for_id(site_id, self.db_session)
+
+                    time_delta = pd.Timestamp.now() - pd.Timedelta(days=1)
+                    if flow_site.df.empty or flow_site.df["ds"].max() < time_delta:
+                        print(f"\nSkipping site {site_id} because it has no data\n")
+                        continue
+
                     forecaster = Forecaster(flow_site)
                     forecast = forecaster.generate_forecast()
                     forecast.save()
+
         except psycopg2.Error as e:
             print(f"Error forecasting site {site_id}: {e}")
 
